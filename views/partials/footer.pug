@@ -1,0 +1,12 @@
+footer.footer
+  .container
+    .empty
+    form(id='chat-form')
+      input(type='hidden' name='username' value=user.displayName)
+      .col-lg-16
+        .input-group
+          input.form-control(type='text', name='message', placeholder='대화를 입력해주세요 ...')
+          span.input-group-btn
+            button.btn.btn-default(type='sumbit')
+              <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+      // /input-group
