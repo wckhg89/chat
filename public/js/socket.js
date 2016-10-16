@@ -3,7 +3,10 @@
       var chatElement = $('section#chat p');
       var form = $('#chat-form');
 
+      var userCnt = $('#userCnt');
+
       var username = $(form).find("input[name='username']").val();
+      var profilePhoto = $(form).find("input[name='photo']").val();
       var socket = undefined;
 
       socket = io();
@@ -11,16 +14,20 @@
         socket.emit('enter', username);
       });
 
-      socket.on('enter', function (username) {
-        $(chatElement).append(username  + "<br/>");
+      socket.on('enter', function (data) {
+        $(userCnt).text(data.userCnt + '명');
+        $(chatElement).append(data.username  + "님이 들어오셨습니다.<br/>");
       });
 
       socket.on('chat', function (data) {
-        $(chatElement).append(data.username  + " : " + data.msg  +"</br>");
+        var photoTag = "<img src='{photo}' style='border-radius: 30px;width:30px;height:30px;'/>";
+        photoTag = photoTag.replace(/{photo}/g, profilePhoto);
+        $(chatElement).append(photoTag + " " +data.username  + " : " + data.msg  +"</br>");
       });
 
       socket.on('disconnect', function (data) {
-        $(chatElement).append(data +"<br/>");
+        $(userCnt).text(data.userCnt + '명');
+        $(chatElement).append(data.username +"님이 나가셨습니다.<br/>");
       });
 
 

@@ -14,7 +14,8 @@ var facebookPassport = function (passport) {
   passport.use(new FacebookStrategy({
       clientID : "1664459743866458",
       clientSecret : "9f8fad6a5ec02f3a53c3e23cb2c8ab69",
-      callbackURL : "http://localhost:8080/auth/facebook/callback"
+      callbackURL : "http://localhost:8080/auth/facebook/callback",
+      profileFields: ['id', 'displayName', 'photos', 'email']
     },
     function (accessToken, refereshToken, profile, done) {
       return done(null, profile);

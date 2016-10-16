@@ -2,7 +2,10 @@ footer.footer
   .container
     .empty
     form(id='chat-form')
-      input(type='hidden' name='username' value=user.displayName)
+      if (user)
+        input(type='hidden' name='username' value=user.displayName)
+        if (user.photos.length > 0)
+          input(type='hidden' name='photo' value=user.photos[0].value)
       .col-lg-16
         .input-group
           input.form-control(type='text', name='message', placeholder='대화를 입력해주세요 ...')
