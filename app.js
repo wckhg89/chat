@@ -8,6 +8,7 @@ var passport = require('passport');
 var socketio = require('socket.io');
 var pug = require('pug');
 var morgan = require('morgan');
+var _ = require('lodash/core');
 
 var authRouter = require('./routes/auth');
 var chatRouter = require('./routes/chat');
@@ -25,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // App-Config
-//app.use(morgan("combined"));
+// app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({
@@ -45,12 +46,25 @@ app.use('/chat/', chatRouter);
 
 require('./config/passport')(passport);
 
+var userCnt = 0;
+var userList = [];
+
 io.on('connect', function (socket) {
-  console.log('Socket is connected : ', socket.id);
   io.emit('data', 'welcome');
 
   socket.on('enter', function(username) {
-    io.emit('enter', username + ' 님이 들어오셨습니다.');
+    var userData = {
+      socketId : socket.id,
+      username : username
+    };
+    userList.push(userData);
+
+    userCnt++;
+    var data = {
+      userCnt : userCnt,
+      username : username
+    }
+    io.emit('enter', data);
   });
 
   socket.on('chat', function(data) {
@@ -60,7 +74,17 @@ io.on('connect', function (socket) {
   });
 
   socket.on('disconnect', function (username) {
-    io.emit('disconnect', username + ' 님이 나가셨습니다.');
+    userCnt--;
+    var user = _.find(userList, function (obj) {
+      return obj.socketId === socket.id
+    });
+
+    var data = {
+      userCnt : userCnt,
+      username : user.username
+    }
+
+    io.emit('disconnect', data);
   })
 });
 
