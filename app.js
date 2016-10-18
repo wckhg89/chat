@@ -1,7 +1,8 @@
 var path = require('path');
-
+var fs = require('fs');
 var express = require('express');
 var http = require('http');
+var https = require('https');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
@@ -16,10 +17,18 @@ var chatRouter = require('./routes/chat');
 var authenticate = require('./middleware/authenticate');
 
 var app = express();
-var httpServer = http.Server(app);
-var io = socketio(httpServer);
 
-var port = 8080;
+var options = {
+  key : fs.readFileSync('./config/rsh/key.pem'),
+  cert : fs.readFileSync('./config/rsh/cert.pem'),
+};
+var httpServer = http.Server(app);
+var httpsServer = https.Server(options, app);
+
+var io = socketio(httpsServer);
+
+var port = 80;
+var sercurePort = 443;
 
 // template engine
 app.set('views', path.join(__dirname, 'views'));
@@ -90,4 +99,8 @@ io.on('connect', function (socket) {
 
 httpServer.listen(port, function () {
   console.log('Server is running on ' + port);
+});
+
+httpsServer.listen(sercurePort, function () {
+  console.log('Server is running on ' + sercurePort);
 });
