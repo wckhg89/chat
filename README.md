@@ -28,3 +28,6 @@
     - facebook 로그인 기능
     - JADE 서버사이드 템플레이팅
     - socket.io 통신
+
+2. ver 0.2.0
+    - mongo DB로 대화 이력 저장 (암호화)
