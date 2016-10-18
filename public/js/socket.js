@@ -20,6 +20,7 @@
       });
 
       socket.on('chat', function (data) {
+        $(chatElement).scrollTop($(chatElement)[0].scrollHeight);
         $(chatElement).append(data.photoTag + " " + data.username  + " : " + data.msg  +"</br>");
       });
 
